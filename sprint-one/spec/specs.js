@@ -119,7 +119,7 @@ define([
       it('does not error when removing from an empty queue', function() {
         expect(function() { queue.dequeue(); }).not.throws();
       });
-
+      
       it('reports a size of 1 after adding two items and removing one', function() {
         queue.enqueue('a');
         queue.enqueue('b');
