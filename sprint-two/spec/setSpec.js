@@ -20,8 +20,21 @@ describe('set', function() {
 
   it('should remove values from a set', function() {
     set.add('Mel Gibson');
+    console.log(set);
     set.remove('Mel Gibson');
     expect(set.contains('Mel Gibson')).to.equal(false);
   });
 
+  it('should not add duplicate values', function() {
+    set.add('Mel Gibson');
+    set.add('Mel Gibson');
+    var dupes = [];
+    _.each(set, function(val) { 
+      if (set.contains('Mel Gibson')) {
+        dupes.push(1);
+      }
+    });
+    console.log(dupes);
+    expect(dupes.length).to.equal(1); 
+  });
 });
