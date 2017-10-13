@@ -2,92 +2,85 @@
 
 // Instantiate a new graph
 var Graph = function(value) {
-  this.nodes = [];
+  this.value = value;
+  this.edge = [];
 };
 
 
 // Add a node to the graph, passing in the node's value.
 Graph.prototype.addNode = function(node) {
-  //create a new node object with properties value and edge
-  var newNode = {value: node, edge: []};
-  this.nodes.push(newNode);
+  var newnode = new Graph(node);
+  newnode.edge.push(this);
+  this.edge.push(newnode);
 };
 
 // Return a boolean value indicating if the value passed to contains is represented in the graph.
 Graph.prototype.contains = function(node) {
+  //debugger;
+  var checked = [];
   var result = false;
-  _.each(this.nodes, function(item) {
-    if (item.value === node) {
+  var checkEdges = function(obj) {
+    checked.push(obj);
+    console.log(checked);
+    if (obj.value === node) {
       result = true;
-    } 
-  });
+    // } else if (obj.edge) {
+    //   for (var key in obj.edge) {
+    //     if (!(_.contains(checked, obj.edge[key]))) {
+    //       checkEdges(obj.edge[key]);
+    //     }
+    //   }
+    } else if (obj.edge) {
+      _.each(obj.edge, function(item) {
+        if (!(_.contains(checked, item))) {
+          checkEdges(item);
+        }
+      });
+    }
+  };
+  checkEdges(this);
   return result;
 };
 
 // Removes a node from the graph.
 Graph.prototype.removeNode = function(node) {
-  var index;
-  _.each(this.nodes, function(item) {
-    if (_.contains(item.edge, node)) {
-      var nodeIndex = _.indexOf(item.edge, node);
-      item.edge.splice(nodeIndex, 1);
-    }
-  });
-  _.each(this.nodes, function(item) {
-    if (item.value === node) {
-      index = _.indexOf(this.nodes, item);
-    }
-  });
-  this.nodes.splice(index, 1);
-  //call removeEdge to remove edges on other nodes
-//splice out node from nodes array
+  var checked = [];
+  var checkEdges = function(obj) {
+    checked.push(obj.toString());
+  };
 };
 
 // Returns a boolean indicating whether two specified nodes are connected.  Pass in the values contained in each of the two nodes.
 Graph.prototype.hasEdge = function(fromNode, toNode) {
-  var result = false;
-  _.each(this.nodes, function(item) {
-    if (item.value === fromNode) {
-      if (_.contains(item.edge, toNode)) {
-        result = true;
-      }
-    }
-  });
-  return result;
+  // var values = Object.values(fromNode.edge);
+  // return _.contains(values, toNode);
+  var values = fromNode.edge;
+  return _.contains(values, toNode);
 };
 
 // Connects two nodes in a graph by adding an edge between them.
 Graph.prototype.addEdge = function(fromNode, toNode) {
-  _.each(this.nodes, function(item) {
-    if (item.value === fromNode) {
-      item.edge.push(toNode);
-    } else if (item.value === toNode) {
-      item.edge.push(fromNode);
-    }
-  });
+  
+  fromNode.edge.push(toNode);
+  toNode.edge.push(fromNode);
 };
 
 // Remove an edge between any two specified (by value) nodes.
 Graph.prototype.removeEdge = function(fromNode, toNode) {
-  _.each(this.nodes, function(item) {
-    if (item.value === fromNode) {
-      var toIndex = _.indexOf(item.edge, toNode);
-      item.edge.splice(toIndex, 1);
-    }
-  });
-  _.each(this.nodes, function(item) {
-    if (item.value === toNode) {
-      var fromIndex = _.indexOf(item.edge, fromNode);
-      item.edge.splice(fromIndex, 1);
-    }
-  });
+  //delete fromNode.edge[toNode];
+  //delete toNode.edge[fromNode];
+  var fromIndex = _.indexOf(fromNode.edge, toNode);
+  if (index > -1) {
+    fromNode.edge.splice(fromIndex, 1);
+  } 
+  var toIndex = _.indexOf(toNode.edge, fromNode);
+  if (index > -1) {
+    toNode.edge.splice(toIndex, 1);
+  } 
 };
 
 // Pass in a callback which will be executed on each node of the graph.
 Graph.prototype.forEachNode = function(cb) {
-  return _.map(this.nodes, function(item) {
-    return cb(item);
-  });
 };
 
 /*

@@ -2,7 +2,7 @@ describe('graph', function() {
   var graph;
 
   beforeEach(function() {
-    graph = new Graph();
+    graph = new Graph(22);
   });
 
   it('should have methods named "addNode", "contains", "removeNode", "addEdge", "hasEdge", "removeEdge" and "forEachNode"', function() {
