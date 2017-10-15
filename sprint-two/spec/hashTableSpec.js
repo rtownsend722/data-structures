@@ -48,14 +48,15 @@ describe('hashTable', function() {
   });
 
   // (Advanced! Remove the extra "x" when you want the following tests to run)
-  xit ('should double in size when needed', function() {
+  it('should double in size when needed', function() {
     _.each(people, function(person) {
       var firstName = person[0];
       var lastName = person[1];
       hashTable.insert(firstName, lastName);
       expect(hashTable.retrieve(firstName)).to.equal(lastName);
     });
-    expect(hashTable._limit).to.equal(16);
+    console.log(hashTable);
+    expect(hashTable._limit).to.equal(8);
   });
 
   xit ('should halve in size when needed', function() {
@@ -71,6 +72,51 @@ describe('hashTable', function() {
     hashTable.remove('Steven');
     hashTable.remove('John');
     hashTable.remove('Mr.');
+    console.log(hashTable);
     expect(hashTable._limit).to.equal(8);
   });
+
+  // it('should double in size when needed', function() {
+  //   _.each(people, function(person) {
+  //     var firstName = person[0];
+  //     var lastName = person[1];
+  //     hashTable.insert(firstName, lastName);
+  //     expect(hashTable.retrieve(firstName)).to.equal(lastName);
+  //   });
+  //   expect(hashTable._limit).to.equal(16);
+  // });
+
+  // it('should halve in size when needed', function() {
+  //   _.each(people, function(person) {
+  //     var firstName = person[0];
+  //     var lastName = person[1];
+  //     hashTable.insert(firstName, lastName);
+  //     expect(hashTable.retrieve(firstName)).to.equal(lastName);
+  //   });
+  //   expect(hashTable._limit).to.equal(16);
+  //   hashTable.remove('George');
+  //   hashTable.remove('Dr.');
+  //   hashTable.remove('Steven');
+  //   hashTable.remove('John');
+  //   hashTable.remove('Mr.');
+  //   expect(hashTable._limit).to.equal(8);
+  // });
+
+// To prevent excessive collisions, make your hashTable double in size as soon as 75 percent of the spaces have been filled
+
+// To save space, make sure the hashTable halves in size when space usage falls below 25 percent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });

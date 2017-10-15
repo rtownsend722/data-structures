@@ -2,7 +2,7 @@ var Tree = function(value) {
   var newTree = {};
   newTree.value = value;
   newTree.children = []; 
-  newTree.parents = []; 
+  newTree.parent = null; 
   _.extend(newTree, treeMethods);
 
   return newTree;
@@ -16,7 +16,24 @@ treeMethods.addChild = function(value) {
   //instantiate a new tree with value
   var tree = Tree(value);
   //add the new tree to parent's children container
+  tree.parent = this;
   this.children.push(tree);
+};
+
+treeMethods.removeFromParent = function() {
+  this.parent = null; 
+};
+
+treeMethods.traverse = function(cb) {
+  var traverseChildren = function(tree) {
+    cb(tree.value);
+    if (tree.children) {
+      _.each(tree.children, function(child) {
+        traverseChildren(child);
+      });
+    }
+  };
+  traverseChildren(this);
 };
 
 treeMethods.contains = function(target) {
@@ -42,9 +59,6 @@ treeMethods.contains = function(target) {
   
 };
 
-//make node//
-//make variable to store node constructor function
-  //
 
 /*
  * Complexity: What is the time complexity of the above functions?

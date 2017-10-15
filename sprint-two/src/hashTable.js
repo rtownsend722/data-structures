@@ -1,25 +1,19 @@
 
 
 var HashTable = function() {
-  this._limit = 8;
+  this._limit = 4;
   this._storage = LimitedArray(this._limit);
 };
 
 HashTable.prototype.insert = function(k, v) {
-  // debugger;
   var index = getIndexBelowMaxForKey(k, this._limit);
   var flag = false;
-  // var subArray = this._storage[index];
-  // check if _.storage[index] is empty
   if (this._storage[index] === undefined) {
-    //   if yes: add an empty array
     this._storage[index] = [];
   }
 
   _.each(this._storage[index], function(item) {
-  //check if sub array has key already
     if (item[0] === k) {
-      //if yes: update value of key
       item[1] = v;
       flag = true;
     } 
@@ -28,20 +22,80 @@ HashTable.prototype.insert = function(k, v) {
   if (!flag) {
     this._storage[index].push([k, v]);
   }
+  this.rebalance(index);
+  
 };
+
+HashTable.prototype.rebalance = function(index) {
+  var insert = function(k, v) {
+    var index = getIndexBelowMaxForKey(k, this._limit);
+    var flag = false;
+    if (this._storage[index] === undefined) {
+      this._storage[index] = [];
+    }
+
+    _.each(this._storage[index], function(item) {
+      if (item[0] === k) {
+        item[1] = v;
+        flag = true;
+      } 
+    });
+
+    if (!flag) {
+      this._storage[index].push([k, v]);
+    }
+  };
+  
+
+  if (this._storage[index].length >= (0.75 * this._limit)) {
+    var tempStorage = [];
+    //traverse hash table and push each key value array to temporary storage
+    _.each(this._storage, function(bucket) {
+      if (typeof bucket !== 'function') {
+        _.each(bucket, function(tuple) {
+          tempStorage.push(tuple);
+        });
+      }
+    });
+    //make new HashTable with size double current hash table
+    this._limit *= 2;
+    this._storage = LimitedArray(this._limit);
+    //iterate through temporary storage and add each key value array to new hash table
+    var tempHashTable = this;
+    _.each(tempStorage, function(tuple) {
+      insert.call(tempHashTable, tuple[0], tuple[1]);
+      // tempHashTable.insert(tuple[0], tuple[1]);
+    });
+  } else if (((this._storage[index].length) <= (0.25 * this._limit)) && _.limit > 8) {
+    var tempStorage = [];
+    //traverse hash table and push each key value array to temporary storage
+    _.each(this._storage, function(bucket) {
+      if (typeof bucket !== 'function') {
+        _.each(bucket, function(tuple) {
+          tempStorage.push(tuple);
+        });
+      }
+    });
+    //make new HashTable with size double current hash table
+    this._limit *= 0.5;
+    this._storage = LimitedArray(this._limit);
+    //iterate through temporary storage and add each key value array to new hash table
+    var tempHashTable = this;
+    _.each(tempStorage, function(tuple) {
+      insert.call(tempHashTable, tuple[0], tuple[1]);
+      // tempHashTable.insert(tuple[0], tuple[1]);
+    });    
+  }
+    
+};
+
   
 HashTable.prototype.retrieve = function(k) {
-  // debugger;
   var result;
-  //get the index from the hash function
   var index = getIndexBelowMaxForKey(k, this._limit);
-  //create a variable to store this._storage
   var subArray = this._storage[index];
-  //loop through this._storage[index] (and maybe return this)
   _.each(subArray, function(item) {
-    //check if 0 indexed item of current sub-array index is k
     if (item[0] === k) {
-      //if yes: return the 1 index of same
       result = item[1];
     }
   });
@@ -50,13 +104,9 @@ HashTable.prototype.retrieve = function(k) {
 
 HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  //create temp var to store this._storage[index]
   var subArray = this._storage[index];
-  //loop through sub Array
   _.each(subArray, function(item, index) {
-    //check if 0 indexed item in sub array is k
     if (item[0] === k) {
-      //splice out sub array index of k
       subArray.splice(index, 1);
     }
   });

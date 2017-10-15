@@ -49,14 +49,29 @@ describe('tree', function() {
     expect(tree.children[0].children[0].value).to.equal(7);
   });
 
-  it('should correctly remove parents', function() {
-    var child = tree.children[0];
+  it('should correctly remove parent', function() {
     tree.addChild(5);
     tree.addChild(6);
     tree.children[0].addChild(7);
     tree.children[1].addChild(8);
-    tree.children[0].removeParent();
-    expect(child.parents).to.eql(null);
+    var child = tree.children[0].children[0];
+    child.removeFromParent();
+    expect(child.parent).to.equal(null);
+  });
+
+  it('should traverse each tree and execute callback', function() {
+    var arr = [];
+    tree.addChild(5);
+    tree.addChild(6);
+    tree.addChild(4);
+    tree.children[0].addChild(8);
+    tree.children[1].addChild(9);
+    tree.children[2].addChild(10);
+    var makeArr = function(value) {
+      arr.push(value);
+    };
+    tree.traverse(makeArr);
+    expect(arr).to.eql([1, 5, 8, 6, 9, 4, 10]);
   });
 
 });

@@ -2,6 +2,8 @@ var BinarySearchTree = function(value) {
   this.left = null;
   this.right = null;
   this.value = value;
+  this.level = 0;
+
 };
 
 BinarySearchTree.prototype.insert = function(value) {
@@ -18,19 +20,24 @@ BinarySearchTree.prototype.insert = function(value) {
 
   var newTree = new BinarySearchTree(value);
   var addTree = function(tree) {
+    //debugger;
     if (newTree.value < tree.value) {
       if (tree.left === null) {
         tree.left = newTree;
+        newTree.level = newTree.level + 1;
       } else {
+        newTree.level = newTree.level + 1;
         addTree(tree.left);
       }
     } else {
       if (tree.right === null) {
         tree.right = newTree;
+        newTree.level = newTree.level + 1;
       } else {
+        newTree.level = newTree.level + 1;
         addTree(tree.right);
       }
-    }
+    } 
   };
   addTree(this);     
 };
@@ -61,6 +68,10 @@ BinarySearchTree.prototype.depthFirstLog = function(cb) {
     }
   };
   changeTree(this);
+};
+
+BinarySearchTree.prototype.breadthFirstLog = function(cb) {
+  
 };
 
 // A .left property, a binary search tree (BST) where all values are lower than than it the current value.
